@@ -8,10 +8,12 @@ const MOJO_LSP_SERVER_ID: &str = "mojo-lsp-server";
 const MOJO_LSP_EXECUTABLE: &str = "mojo-lsp-server";
 const MOJO_LSP_PROXY: &str = "bin/mojo-lsp-zed.js";
 const MOJO_LSP_PROXY_SOURCE: &str = include_str!("../bin/mojo-lsp-zed.js");
-const PIXI_MOJO_LSP_EXECUTABLES: [&str; 2] = [
-    ".pixi/envs/default/bin/mojo-lsp-server",
-    ".pixi/envs/default/Scripts/mojo-lsp-server.exe",
-];
+const DERIVED_MODULAR_CFG: &str = ".derived/share/max/modular.cfg";
+const DERIVED_MOJO_LSP: &str = ".derived/bin/mojo-lsp-server";
+const PIXI_MODULAR_CFG: &str = ".pixi/envs/default/share/max/modular.cfg";
+const PIXI_MOJO_LSP: &str = ".pixi/envs/default/bin/mojo-lsp-server";
+const VENV_MODULAR_CFG: &str = ".venv/share/max/modular.cfg";
+const VENV_MOJO_LSP: &str = ".venv/bin/mojo-lsp-server";
 
 struct MojoExtension {
     managed_binary_path: Option<String>,
@@ -41,12 +43,8 @@ impl zed::Extension for MojoExtension {
         let discovered_command = binary_settings
             .as_ref()
             .and_then(|settings| settings.path.clone())
-            .or_else(|| worktree.which(MOJO_LSP_EXECUTABLE))
-            .or_else(|| {
-                PIXI_MOJO_LSP_EXECUTABLES
-                    .iter()
-                    .find_map(|path| worktree.which(path))
-            });
+            .or_else(|| discover_workspace_lsp_command(worktree))
+            .or_else(|| worktree.which(MOJO_LSP_EXECUTABLE));
 
         let command = if let Some(command) = discovered_command {
             command
@@ -102,6 +100,60 @@ impl zed::Extension for MojoExtension {
             env,
         })
     }
+
+    fn language_server_initialization_options(
+        &mut self,
+        language_server_id: &zed::LanguageServerId,
+        worktree: &zed::Worktree,
+    ) -> zed::Result<Option<zed::serde_json::Value>> {
+        if language_server_id.as_ref() != MOJO_LSP_SERVER_ID {
+            return Ok(None);
+        }
+
+        zed::settings::LspSettings::for_worktree(language_server_id.as_ref(), worktree)
+            .map(|settings| settings.initialization_options)
+    }
+
+    fn language_server_workspace_configuration(
+        &mut self,
+        language_server_id: &zed::LanguageServerId,
+        worktree: &zed::Worktree,
+    ) -> zed::Result<Option<zed::serde_json::Value>> {
+        if language_server_id.as_ref() != MOJO_LSP_SERVER_ID {
+            return Ok(None);
+        }
+
+        zed::settings::LspSettings::for_worktree(language_server_id.as_ref(), worktree)
+            .map(|settings| settings.settings)
+    }
+}
+
+fn discover_workspace_lsp_command(worktree: &zed::Worktree) -> Option<String> {
+    let root = worktree.root_path();
+    for (cfg_path, bin_path) in [
+        (DERIVED_MODULAR_CFG, DERIVED_MOJO_LSP),
+        (PIXI_MODULAR_CFG, PIXI_MOJO_LSP),
+        (VENV_MODULAR_CFG, VENV_MOJO_LSP),
+    ] {
+        let abs_bin = workspace_binary_path(&root, bin_path);
+        if let Some(found) = worktree
+            .which(&abs_bin)
+            .or_else(|| worktree.which(bin_path))
+        {
+            return Some(found);
+        }
+        if worktree.read_text_file(cfg_path).is_ok() {
+            return Some(abs_bin);
+        }
+    }
+    None
+}
+
+fn workspace_binary_path(root_path: &str, relative_path: &str) -> String {
+    Path::new(root_path)
+        .join(relative_path)
+        .to_string_lossy()
+        .into_owned()
 }
 
 fn mojo_lsp_proxy_path(work_dir: &Path) -> zed::Result<PathBuf> {
@@ -207,6 +259,18 @@ mod tests {
 
         assert!(env.contains(&("MODULAR_HOME".into(), "/configured/modular".into())));
         assert!(!env.contains(&("MODULAR_HOME".into(), "/opt/mojo/share/max".into())));
+    }
+
+    #[test]
+    fn builds_workspace_binary_paths_relative_to_worktree_root() {
+        assert_eq!(
+            workspace_binary_path("/home/user/project", PIXI_MOJO_LSP),
+            "/home/user/project/.pixi/envs/default/bin/mojo-lsp-server"
+        );
+        assert_eq!(
+            workspace_binary_path("/home/user/project/", VENV_MOJO_LSP),
+            "/home/user/project/.venv/bin/mojo-lsp-server"
+        );
     }
 }
 
