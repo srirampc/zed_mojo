@@ -1,17 +1,30 @@
 (class_definition
-  name: (identifier) @name) @item
-
-(struct_definition
-  name: (identifier) @name) @item
-
-(trait_definition
-  name: (identifier) @name) @item
+    ["class" "struct"] @context
+    name: (identifier) @name
+    ) @item
 
 (function_definition
-  name: (identifier) @name) @item
+    ["async" "__async"]? @context
+    "def" @context
+    name: (_) @name) @item
 
-(alias_declaration
-  name: (identifier) @name) @item
+(trait_definition
+    "trait" @context
+    name: (identifier) @name) @item
 
-(variable_declaration
-  name: (identifier) @name) @item
+(extension_definition
+    "__extension" @context
+    name: (_) @name) @item
+
+(enum_definition
+    ["__enum" "__union"] @context
+    name: (identifier) @name) @item
+
+(enum_case
+    "case" @context
+    name: (_) @name) @item
+
+; Compile-time constants read as top-level declarations in an outline.
+(parameterized_alias_statement
+    "comptime" @context
+    name: (identifier) @name) @item

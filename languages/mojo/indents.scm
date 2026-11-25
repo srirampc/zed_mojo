@@ -14,8 +14,6 @@
 
 (class_definition) @start.class
 
-(struct_definition) @start.struct
-
 (trait_definition) @start.trait
 
 (if_statement) @start.if
