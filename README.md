@@ -8,7 +8,7 @@ This extension combines features from [`BenWibking/zed_mojo`](https://github.com
 - Mojo code snippets in `snippets/mojo.json`
 - Mojo LSP integration through `mojo-lsp-server` with forwarding for `initialization_options` and workspace `settings`
 
-The extension starts `mojo-lsp-server` through a small Node proxy. Mojo 1.0.0
+The extension starts `mojo-lsp-server` through a small Node proxy. Mojo 1.0.0+
 advertises notebook synchronization, which Zed does not support; the proxy
 removes that capability and forwards the rest of the protocol unchanged,
 including semantic-token delta support.
@@ -22,7 +22,7 @@ The extension finds or installs `mojo-lsp-server` in this lookup order:
 3. The workspace's default Pixi environment under `.pixi/envs/default/bin/mojo-lsp-server`
 4. A workspace virtual environment under `.venv/bin/mojo-lsp-server`
 5. The worktree shell's `PATH`
-6. A managed Mojo 1.0.0 installation downloaded from Modular's stable Conda
+6. A managed Mojo 1.2.0 installation downloaded from Modular's stable Conda
    channel into Zed's extension storage
 
 The managed installation supports Apple Silicon, Linux x86-64, and Linux

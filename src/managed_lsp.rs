@@ -7,7 +7,7 @@ use tar::Archive;
 use zed_extension_api as zed;
 use zip::ZipArchive;
 
-pub const MOJO_VERSION: &str = "1.0.0";
+pub const MOJO_VERSION: &str = "1.2.0";
 
 const COMPLETE_MARKER: &str = ".complete";
 
@@ -112,14 +112,14 @@ fn artifacts_for(os: zed::Os, architecture: zed::Architecture) -> zed::Result<Pl
             packages: [
                 PackageArtifact {
                     name: "mojo",
-                    url: "https://conda.modular.com/max/osx-arm64/mojo-1.0.0-release.conda",
-                    sha256: "200bd9ace6e06ad2a9b4f4cce9afa3e5f3c00b3d87a6d57206249df2a5568e38",
+                    url: "https://conda.modular.com/max/osx-arm64/mojo-1.2.0-release.conda",
+                    sha256: "15a11e832acae6cb52b32541d35d4feab608f265c6f8fb4b2d3569d7eeebd55c",
                     contents: PackageContents::LspOnly,
                 },
                 PackageArtifact {
                     name: "mojo-compiler",
-                    url: "https://conda.modular.com/max/osx-arm64/mojo-compiler-1.0.0-release.conda",
-                    sha256: "c52054bc444d851e5c38cc33e790fb011a1080470244aaa59351ac5056d08c59",
+                    url: "https://conda.modular.com/max/osx-arm64/mojo-compiler-1.2.0-release.conda",
+                    sha256: "1f5811bc7ff86dc8a684ddab6d9612a966529935fa184e204990323e573228de",
                     contents: PackageContents::All,
                 },
             ],
@@ -130,14 +130,14 @@ fn artifacts_for(os: zed::Os, architecture: zed::Architecture) -> zed::Result<Pl
             packages: [
                 PackageArtifact {
                     name: "mojo",
-                    url: "https://conda.modular.com/max/linux-64/mojo-1.0.0-release.conda",
-                    sha256: "5778f999b69cf77bd6f07ccaf32d0bafc258fe75206afc8e88919269cebb6e75",
+                    url: "https://conda.modular.com/max/linux-64/mojo-1.2.0-release.conda",
+                    sha256: "18485673c7089a187107633a0b9086c5fcb2f0fbe5daf67af44490271e6a2e57",
                     contents: PackageContents::LspOnly,
                 },
                 PackageArtifact {
                     name: "mojo-compiler",
-                    url: "https://conda.modular.com/max/linux-64/mojo-compiler-1.0.0-release.conda",
-                    sha256: "4394c6146d47ec7794a9a3ed5775ae158f59f83f8e1aed59408b17c4909821b3",
+                    url: "https://conda.modular.com/max/linux-64/mojo-compiler-1.2.0-release.conda",
+                    sha256: "a746d7db173a9882e7073ae6d905acfe383a754faecb4a53710b7b90db377e6b",
                     contents: PackageContents::All,
                 },
             ],
@@ -148,14 +148,14 @@ fn artifacts_for(os: zed::Os, architecture: zed::Architecture) -> zed::Result<Pl
             packages: [
                 PackageArtifact {
                     name: "mojo",
-                    url: "https://conda.modular.com/max/linux-aarch64/mojo-1.0.0-release.conda",
-                    sha256: "0f273174733386a584e41489e556c9014a5e975a57bd556d847f252fc9091d76",
+                    url: "https://conda.modular.com/max/linux-aarch64/mojo-1.2.0-release.conda",
+                    sha256: "e35d34de9266d0a9694cceea4ee061dc6dbf943fb656437082d2b7adebee73e2",
                     contents: PackageContents::LspOnly,
                 },
                 PackageArtifact {
                     name: "mojo-compiler",
-                    url: "https://conda.modular.com/max/linux-aarch64/mojo-compiler-1.0.0-release.conda",
-                    sha256: "da1772742c54f1f8f7b883e6338b1fe5de4592f2c882220dcceae623cc661e57",
+                    url: "https://conda.modular.com/max/linux-aarch64/mojo-compiler-1.2.0-release.conda",
+                    sha256: "a10c210e81877d47369f53b918a2b82da635908d44088ef52ffeb7035b297f23",
                     contents: PackageContents::All,
                 },
             ],
